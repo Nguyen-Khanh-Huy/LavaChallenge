@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 3442965454763531937}
   - component: {fileID: 2219023895637837653}
   - component: {fileID: 8554732760454096510}
-  - component: {fileID: 1537632146389286879}
+  - component: {fileID: 3857921854221767895}
   m_Layer: 0
   m_Name: BGDown
   m_TagString: Untagged
@@ -84,7 +84,7 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!65 &1537632146389286879
+--- !u!65 &3857921854221767895
 BoxCollider:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}

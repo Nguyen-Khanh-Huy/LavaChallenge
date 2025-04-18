@@ -13,6 +13,11 @@ public class Player : MonoBehaviour
 
     private void Update()
     {
+        Moving();
+    }
+
+    private void Moving()
+    {
         moveDir = Vector3.zero;
         float targetZRotation = 0f;
 
