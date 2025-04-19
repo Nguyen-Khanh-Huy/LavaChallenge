@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 5695566015287773150}
   - component: {fileID: 1762618253142236384}
   - component: {fileID: 9187762184668739614}
-  m_Layer: 9
+  m_Layer: 10
   m_Name: Model
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -27,13 +27,13 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 73604364218664781}
   serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalRotation: {x: -0.5, y: -0.5, z: -0.5, w: 0.5}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 400, y: 400, z: 400}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 1714467022063833984}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: -90, y: 0, z: -90}
 --- !u!33 &5695566015287773150
 MeshFilter:
   m_ObjectHideFlags: 0
@@ -120,7 +120,7 @@ GameObject:
   - component: {fileID: 1714467022063833984}
   - component: {fileID: 8484547941781269150}
   - component: {fileID: 2035355360959602920}
-  m_Layer: 9
+  m_Layer: 10
   m_Name: Player
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -158,12 +158,12 @@ BoxCollider:
     serializedVersion: 2
     m_Bits: 0
   m_LayerOverridePriority: 0
-  m_IsTrigger: 1
+  m_IsTrigger: 0
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
   m_Size: {x: 1.4, y: 1.4, z: 1.4}
-  m_Center: {x: 0, y: 0, z: -0.5}
+  m_Center: {x: 0, y: -0.5, z: 0}
 --- !u!114 &2035355360959602920
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -177,10 +177,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   jumpHeight: 2
-  jumpDuration: 0.3
+  jumpDuration: 0.4
   jumpDistance: 2
   isJumping: 0
   startTime: 0
   startPos: {x: 0, y: 0, z: 0}
   targetPos: {x: 0, y: 0, z: 0}
   moveDir: {x: 0, y: 0, z: 0}
+  model: {fileID: 8171565243903970854}
