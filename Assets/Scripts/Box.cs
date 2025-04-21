@@ -4,7 +4,18 @@ using UnityEngine;
 
 public class Box : MonoBehaviour
 {
-    private bool isMoving = false;
+    [SerializeField] private bool isMoving = false;
+    [SerializeField] private Transform _startPos;
+    private void Awake()
+    {
+        _startPos = transform;
+    }
+
+    private void OnEnable()
+    {
+        transform.position = _startPos.position;
+    }
+
     private void Update()
     {
         if (!isMoving)
