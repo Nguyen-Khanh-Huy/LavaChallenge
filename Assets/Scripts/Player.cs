@@ -13,11 +13,14 @@ public class Player : MonoBehaviour
     [SerializeField] private Transform model;
 
     private Vector3 desiredMoveDir = Vector3.zero;
-    private float desiredTargetZRotation = 0f;
+    private float rotate = 0f;
     private bool canMoveUpLeft = true;
     private bool canMoveUpRight = true;
     private bool canMoveUpForward = true;
     private bool canMoveUpBack = true;
+
+    private Vector3 pendingMoveDir = Vector3.zero;
+    private float pendingRotationZ = 0f;
 
     private void Update()
     {
@@ -29,27 +32,34 @@ public class Player : MonoBehaviour
     private void GetInput()
     {
         desiredMoveDir = Vector3.zero;
-        desiredTargetZRotation = 0f;
+        rotate = 0f;
 
         if (Input.GetAxisRaw("Vertical") > 0)
         {
             desiredMoveDir = Vector3.forward;
-            desiredTargetZRotation = 90f;
+            rotate = 90f;
         }
         else if (Input.GetAxisRaw("Vertical") < 0)
         {
             desiredMoveDir = Vector3.back;
-            desiredTargetZRotation = -90f;
+            rotate = -90f;
         }
         else if (Input.GetAxisRaw("Horizontal") < 0)
         {
             desiredMoveDir = Vector3.left;
-            desiredTargetZRotation = 0f;
+            rotate = 0f;
         }
         else if (Input.GetAxisRaw("Horizontal") > 0)
         {
             desiredMoveDir = Vector3.right;
-            desiredTargetZRotation = 180f;
+            rotate = 180f;
+        }
+
+        if (desiredMoveDir == Vector3.zero && pendingMoveDir != Vector3.zero)
+        {
+            desiredMoveDir = pendingMoveDir;
+            rotate = pendingRotationZ;
+            pendingMoveDir = Vector3.zero;
         }
     }
 
@@ -63,9 +73,27 @@ public class Player : MonoBehaviour
         if (!isJumping && desiredMoveDir != Vector3.zero)
         {
             if (!CanMoveDown(desiredMoveDir) || !CanMoveUpDirection(desiredMoveDir))
-            {
                 desiredMoveDir = Vector3.zero;
-            }
+        }
+    }
+
+    private void OnDrawGizmos()
+    {
+        if (!Application.isPlaying) return;
+
+        if (desiredMoveDir != Vector3.zero)
+        {
+            Vector3 normalizedDirection = desiredMoveDir.normalized;
+            Vector3 rightAxis = Vector3.Cross(normalizedDirection, Vector3.up).normalized;
+
+            if (rightAxis == Vector3.zero)
+                rightAxis = Vector3.right;
+
+            Quaternion rotation = Quaternion.AngleAxis(-45f, rightAxis);
+            Vector3 finalDirection = rotation * normalizedDirection;
+
+            Gizmos.color = Color.green;
+            Gizmos.DrawRay(transform.position, finalDirection * 2f);
         }
     }
 
@@ -83,27 +111,17 @@ public class Player : MonoBehaviour
         if (Physics.Raycast(transform.position, finalDirection, out RaycastHit hit, 2f))
         {
             if (hit.collider.gameObject.layer == LayerMask.NameToLayer("Tree"))
-            {
                 return false;
-            }
             else if (hit.collider.gameObject.layer == LayerMask.NameToLayer("Box"))
-            {
                 return true;
-            }
             else if (hit.collider.gameObject.layer == LayerMask.NameToLayer("Gem"))
-            {
                 return true;
-            }
             else if (hit.collider.gameObject.layer != LayerMask.NameToLayer("BG"))
-            {
                 return false;
-            }
+
             return true;
         }
-        else
-        {
-            return false;
-        }
+        else return false;
     }
 
     private bool CanMoveUpDirection(Vector3 direction)
@@ -117,8 +135,8 @@ public class Player : MonoBehaviour
 
     private bool CanMoveUp(Vector3 direction)
     {
-        Debug.DrawRay(transform.position, direction * 4f, Color.red);
-        RaycastHit[] hits = Physics.RaycastAll(transform.position, direction, 4f);
+        Debug.DrawRay(transform.position + Vector3.down * 0.5f, direction * 4f, Color.red);
+        RaycastHit[] hits = Physics.RaycastAll(transform.position + Vector3.down * 0.5f, direction, 4f);
         return hits.Length < 2;
     }
 
@@ -133,7 +151,7 @@ public class Player : MonoBehaviour
                 startPos = transform.position;
                 targetPos = startPos + desiredMoveDir * jumpDistance;
                 moveDir = desiredMoveDir;
-                model.rotation = Quaternion.Euler(-90f, 0f, desiredTargetZRotation);
+                model.rotation = Quaternion.Euler(-90f, 0f, rotate);
             }
         }
 
@@ -142,12 +160,15 @@ public class Player : MonoBehaviour
             float t = Mathf.Clamp01((Time.time - startTime) / jumpDuration);
             float yOffset = jumpHeight * 4 * t * (1 - t);
             transform.position = Vector3.Lerp(startPos, targetPos, t) + Vector3.up * yOffset;
-
             if (t >= 1f) isJumping = false;
         }
         else if (desiredMoveDir == Vector3.zero)
-        {
             moveDir = Vector3.zero;
-        }
+    }
+
+    public void MoveFromUIButton(Vector3 direction, float rotationZ)
+    {
+        pendingMoveDir = direction;
+        pendingRotationZ = rotationZ;
     }
 }
