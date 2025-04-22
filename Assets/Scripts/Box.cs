@@ -20,7 +20,7 @@ public class Box : MonoBehaviour
     {
         if (!isMoving)
         {
-            float checkLength = 1.1f;
+            float checkLength = 1.2f;
             Vector3 startRaycast = transform.position + Vector3.up * (GetComponent<Collider>().bounds.extents.y);
 
             CheckCollision(startRaycast, Vector3.left, checkLength);

@@ -14,10 +14,6 @@ public class Player : MonoBehaviour
 
     private Vector3 dir = Vector3.zero;
     private float rotate = 0f;
-    private bool canMoveUpLeft = true;
-    private bool canMoveUpRight = true;
-    private bool canMoveUpForward = true;
-    private bool canMoveUpBack = true;
 
     private Vector3 pendingMoveDir = Vector3.zero;
     private float pendingRotationZ = 0f;
@@ -31,7 +27,6 @@ public class Player : MonoBehaviour
     private void Update()
     {
         GetInput();
-        CheckEnvironment();
         Moving();
     }
 
@@ -69,62 +64,36 @@ public class Player : MonoBehaviour
         }
     }
 
-    private void CheckEnvironment()
-    {
-        canMoveUpLeft = CanMoveUp(Vector3.left);
-        canMoveUpRight = CanMoveUp(Vector3.right);
-        canMoveUpForward = CanMoveUp(Vector3.forward);
-        canMoveUpBack = CanMoveUp(Vector3.back);
-
-        if (!IsJumping && dir != Vector3.zero)
-        {
-            if (!CanMoveDown(dir) || !CanMoveUpDirection(dir))
-                dir = Vector3.zero;
-        }
-    }
-
     private bool CanMoveDown(Vector3 direction)
     {
         Vector3 normalizedDirection = direction.normalized;
         Vector3 rightAxis = Vector3.Cross(normalizedDirection, Vector3.up).normalized;
-        Quaternion rotation = Quaternion.AngleAxis(-60f, rightAxis);
-        Vector3 finalDirection = rotation * normalizedDirection;
-
+        Vector3 finalDirection = Quaternion.AngleAxis(-60f, rightAxis) * normalizedDirection;
+        int bg5Mask = LayerMask.GetMask("BG5");
+        int treeBg2Bg3Mask = LayerMask.GetMask("Tree", "BG2", "BG3");
+        int canMoveToMask = LayerMask.GetMask("Box", "Gem", "BG", "BG4", "BG5", "Soul");
         //Debug.DrawRay(transform.position + Vector3.down * 0.5f, direction * 2f, Color.blue);
-        if (Physics.Raycast(transform.position + Vector3.down * 0.5f, direction, 2f, LayerMask.GetMask("BG5")))
+        if (Physics.Raycast(transform.position + Vector3.down * 0.5f, direction, 2f, bg5Mask))
             return false;
 
-        //Debug.DrawRay(transform.position + Vector3.up * 1f, finalDirection * 4f, Color.green);
         RaycastHit[] hits = Physics.RaycastAll(transform.position + Vector3.up * 1f, finalDirection, 4f);
-        if (hits.Any(hit => hit.collider.gameObject.layer == LayerMask.NameToLayer("Tree") ||
-                            hit.collider.gameObject.layer == LayerMask.NameToLayer("BG2") ||
-                            hit.collider.gameObject.layer == LayerMask.NameToLayer("BG3"))) return false;
+        if (hits.Any(hit => (treeBg2Bg3Mask & (1 << hit.collider.gameObject.layer)) != 0))
+            return false;
 
-        return hits.Any(hit => hit.collider.gameObject.layer == LayerMask.NameToLayer("Box") ||
-                               hit.collider.gameObject.layer == LayerMask.NameToLayer("Gem") ||
-                               hit.collider.gameObject.layer == LayerMask.NameToLayer("BG") ||
-                               hit.collider.gameObject.layer == LayerMask.NameToLayer("BG4") ||
-                               hit.collider.gameObject.layer == LayerMask.NameToLayer("BG5") ||
-                               hit.collider.gameObject.layer == LayerMask.NameToLayer("Soul"));
-    }
-
-    private bool CanMoveUpDirection(Vector3 direction)
-    {
-        if (direction == Vector3.left) return canMoveUpLeft;
-        if (direction == Vector3.right) return canMoveUpRight;
-        if (direction == Vector3.forward) return canMoveUpForward;
-        if (direction == Vector3.back) return canMoveUpBack;
-        return true;
+        return hits.Any(hit => (canMoveToMask & (1 << hit.collider.gameObject.layer)) != 0);
     }
 
     private bool CanMoveUp(Vector3 direction)
     {
-        Debug.DrawRay(transform.position + Vector3.down * 0.5f, direction * 4f, Color.red);
+        int gemMask = LayerMask.GetMask("Gem");
+        int ignoreMask = LayerMask.GetMask("Soul");
+        //Debug.DrawRay(transform.position + Vector3.down * 0.5f, direction * 2f, Color.red);
+        if (Physics.Raycast(transform.position + Vector3.down * 0.5f, direction, 2f, gemMask))
+            return true;
+
+        //Debug.DrawRay(transform.position + Vector3.down * 0.5f, direction * 4f, Color.red);
         RaycastHit[] hits = Physics.RaycastAll(transform.position + Vector3.down * 0.5f, direction, 4f);
-        hits = hits.Where(hit =>
-        hit.collider.gameObject.layer != LayerMask.NameToLayer("Gem") &&
-        hit.collider.gameObject.layer != LayerMask.NameToLayer("BG3") &&
-        hit.collider.gameObject.layer != LayerMask.NameToLayer("Soul")).ToArray();
+        hits = hits.Where(hit => (ignoreMask & (1 << hit.collider.gameObject.layer)) == 0).ToArray();
         return hits.Length < 2;
     }
 
@@ -132,7 +101,7 @@ public class Player : MonoBehaviour
     {
         if (!IsJumping && dir != Vector3.zero)
         {
-            if (CanMoveDown(dir) && CanMoveUpDirection(dir))
+            if (CanMoveDown(dir) && CanMoveUp(dir))
             {
                 IsJumping = true;
                 startTime = Time.time;
@@ -140,6 +109,7 @@ public class Player : MonoBehaviour
                 targetPos = startPos + dir * jumpDistance;
                 Model.rotation = Quaternion.Euler(-90f, 0f, rotate);
             }
+            else dir = Vector3.zero;
         }
 
         if (IsJumping)
