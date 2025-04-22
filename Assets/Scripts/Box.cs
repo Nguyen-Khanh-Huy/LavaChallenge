@@ -5,15 +5,15 @@ using UnityEngine;
 public class Box : MonoBehaviour
 {
     [SerializeField] private bool isMoving = false;
-    [SerializeField] private Transform _startPos;
+    [SerializeField] private Vector3 _startPos;
     private void Awake()
     {
-        _startPos = transform;
+        _startPos = transform.position;
     }
 
     private void OnEnable()
     {
-        transform.position = _startPos.position;
+        transform.position = _startPos;
     }
 
     private void Update()

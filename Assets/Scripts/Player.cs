@@ -1,3 +1,4 @@
+using System.Linq;
 using UnityEngine;
 
 public class Player : MonoBehaviour
@@ -10,7 +11,7 @@ public class Player : MonoBehaviour
     [SerializeField] private Vector3 startPos;
     [SerializeField] private Vector3 targetPos;
     [SerializeField] private Vector3 moveDir;
-    [SerializeField] private Transform model;
+    public Transform Model;
 
     private Vector3 desiredMoveDir = Vector3.zero;
     private float rotate = 0f;
@@ -77,25 +78,25 @@ public class Player : MonoBehaviour
         }
     }
 
-    private void OnDrawGizmos()
-    {
-        if (!Application.isPlaying) return;
+    //private void OnDrawGizmos()
+    //{
+    //    if (!Application.isPlaying) return;
 
-        if (desiredMoveDir != Vector3.zero)
-        {
-            Vector3 normalizedDirection = desiredMoveDir.normalized;
-            Vector3 rightAxis = Vector3.Cross(normalizedDirection, Vector3.up).normalized;
+    //    if (desiredMoveDir != Vector3.zero)
+    //    {
+    //        Vector3 normalizedDirection = desiredMoveDir.normalized;
+    //        Vector3 rightAxis = Vector3.Cross(normalizedDirection, Vector3.up).normalized;
 
-            if (rightAxis == Vector3.zero)
-                rightAxis = Vector3.right;
+    //        if (rightAxis == Vector3.zero)
+    //            rightAxis = Vector3.right;
 
-            Quaternion rotation = Quaternion.AngleAxis(-45f, rightAxis);
-            Vector3 finalDirection = rotation * normalizedDirection;
+    //        Quaternion rotation = Quaternion.AngleAxis(-45f, rightAxis);
+    //        Vector3 finalDirection = rotation * normalizedDirection;
 
-            Gizmos.color = Color.green;
-            Gizmos.DrawRay(transform.position, finalDirection * 2f);
-        }
-    }
+    //        Gizmos.color = Color.green;
+    //        Gizmos.DrawRay(transform.position, finalDirection * 2f);
+    //    }
+    //}
 
     private bool CanMoveDown(Vector3 direction)
     {
@@ -106,7 +107,7 @@ public class Player : MonoBehaviour
 
         Quaternion rotation = Quaternion.AngleAxis(-45f, rightAxis);
         Vector3 finalDirection = rotation * normalizedDirection;
-        Debug.DrawRay(transform.position, finalDirection * 2f, Color.green);
+        //Debug.DrawRay(transform.position, finalDirection * 2f, Color.green);
 
         if (Physics.Raycast(transform.position, finalDirection, out RaycastHit hit, 2f))
         {
@@ -115,6 +116,10 @@ public class Player : MonoBehaviour
             else if (hit.collider.gameObject.layer == LayerMask.NameToLayer("Box"))
                 return true;
             else if (hit.collider.gameObject.layer == LayerMask.NameToLayer("Gem"))
+                return true;
+            else if (hit.collider.gameObject.layer == LayerMask.NameToLayer("BG3"))
+                return false;
+            else if (hit.collider.gameObject.layer == LayerMask.NameToLayer("Soul"))
                 return true;
             else if (hit.collider.gameObject.layer != LayerMask.NameToLayer("BG"))
                 return false;
@@ -135,8 +140,12 @@ public class Player : MonoBehaviour
 
     private bool CanMoveUp(Vector3 direction)
     {
-        Debug.DrawRay(transform.position + Vector3.down * 0.5f, direction * 4f, Color.red);
+        //Debug.DrawRay(transform.position + Vector3.down * 0.5f, direction * 4f, Color.red);
         RaycastHit[] hits = Physics.RaycastAll(transform.position + Vector3.down * 0.5f, direction, 4f);
+        hits = hits.Where(hit =>
+        hit.collider.gameObject.layer != LayerMask.NameToLayer("Gem") &&
+        hit.collider.gameObject.layer != LayerMask.NameToLayer("BG3") &&
+        hit.collider.gameObject.layer != LayerMask.NameToLayer("Soul")).ToArray();
         return hits.Length < 2;
     }
 
@@ -151,7 +160,7 @@ public class Player : MonoBehaviour
                 startPos = transform.position;
                 targetPos = startPos + desiredMoveDir * jumpDistance;
                 moveDir = desiredMoveDir;
-                model.rotation = Quaternion.Euler(-90f, 0f, rotate);
+                Model.rotation = Quaternion.Euler(-90f, 0f, rotate);
             }
         }
 

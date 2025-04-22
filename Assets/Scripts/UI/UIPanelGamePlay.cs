@@ -15,7 +15,7 @@ public class UIPanelGamePlay : MonoBehaviour
     public Text TxtCurLevel;
     public Text TxtCurMovies;
 
-    public UIPanelSettingDialogGamePlay UIPanelSettingDialog;
+    public UIPanelSettingDialogGamePlay UIPanelSettingDialogGamePlay;
 
     private void Start()
     {
@@ -23,5 +23,12 @@ public class UIPanelGamePlay : MonoBehaviour
         BtnUR.onClick.AddListener(() => Player.MoveFromUIButton(Vector3.forward, 90f));
         BtnDL.onClick.AddListener(() => Player.MoveFromUIButton(Vector3.back, -90f));
         BtnDR.onClick.AddListener(() => Player.MoveFromUIButton(Vector3.right, 180f));
+
+        BtnSettingGamePlay.onClick.AddListener(() => HandleBtnSetting());
+    }
+
+    private void HandleBtnSetting()
+    {
+        UIPanelSettingDialogGamePlay.gameObject.SetActive(true);
     }
 }

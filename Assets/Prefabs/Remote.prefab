@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 4369261682103707428}
   - component: {fileID: 7182377436612953189}
   - component: {fileID: 2445913419335032598}
-  m_Layer: 0
+  m_Layer: 13
   m_Name: Soul
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -119,8 +119,8 @@ GameObject:
   - component: {fileID: 1287695955103473325}
   - component: {fileID: 431944518771540693}
   - component: {fileID: 3689207934918447343}
-  m_Layer: 11
-  m_Name: BGTop22
+  m_Layer: 12
+  m_Name: BGTop3
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

@@ -13,6 +13,14 @@ public class Gem : MonoBehaviour
     {
         if (collision.gameObject.TryGetComponent<Player>(out var player))
         {
+            LevelManager.Ins.ListLevels[LevelManager.Ins.IdLevel].gameObject.SetActive(false);
+            if (LevelManager.Ins.IdLevel < LevelManager.Ins.ListLevels.Count - 1)
+            {
+                LevelManager.Ins.IdLevel++;
+                LevelManager.Ins.ListLevelUnlock[LevelManager.Ins.IdLevel] = true;
+            }
+
+            UIManager.Ins.UIPanelMenu.gameObject.SetActive(true);
             gameObject.SetActive(false);
         }
     }

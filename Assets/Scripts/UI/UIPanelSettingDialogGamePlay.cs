@@ -18,11 +18,15 @@ public class UIPanelSettingDialogGamePlay : UIPanelSettingDialogMenu
     private void HandleBtnRestart()
     {
         gameObject.SetActive(false);
-        Debug.Log("zzzzzz");
+        LevelManager.Ins.ListLevels[LevelManager.Ins.IdLevel].gameObject.SetActive(false);
+        LevelManager.Ins.ListLevels[LevelManager.Ins.IdLevel].gameObject.SetActive(true);
     }
     
     private void HandleBtnHome()
     {
         gameObject.SetActive(false);
+        LevelManager.Ins.ListLevels[LevelManager.Ins.IdLevel].gameObject.SetActive(false);
+        UIManager.Ins.UIPanelGamePlay.gameObject.SetActive(false);
+        UIManager.Ins.UIPanelMenu.gameObject.SetActive(true);
     }
 }
