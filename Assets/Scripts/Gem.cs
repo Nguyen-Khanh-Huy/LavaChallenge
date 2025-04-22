@@ -13,6 +13,7 @@ public class Gem : MonoBehaviour
     {
         if (collision.gameObject.TryGetComponent<Player>(out var player))
         {
+            AudioManager.Ins.PlaySFX(AudioManager.Ins.SfxCollect);
             LevelManager.Ins.ListLevels[LevelManager.Ins.IdLevel].gameObject.SetActive(false);
             if (LevelManager.Ins.IdLevel < LevelManager.Ins.ListLevels.Count - 1)
             {
@@ -20,6 +21,7 @@ public class Gem : MonoBehaviour
                 LevelManager.Ins.ListLevelUnlock[LevelManager.Ins.IdLevel] = true;
             }
 
+            UIManager.Ins.UIPanelGamePlay.gameObject.SetActive(false);
             UIManager.Ins.UIPanelMenu.gameObject.SetActive(true);
             gameObject.SetActive(false);
         }

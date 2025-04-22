@@ -25,10 +25,18 @@ public class UIPanelGamePlay : MonoBehaviour
         BtnDR.onClick.AddListener(() => Player.MoveFromUIButton(Vector3.right, 180f));
 
         BtnSettingGamePlay.onClick.AddListener(() => HandleBtnSetting());
+
+        TxtCurLevel.text = "Level: " + LevelManager.Ins.IdLevel.ToString();
+    }
+
+    private void Update()
+    {
+        TxtCurMovies.text = "Movies: " + UIManager.Ins.Player.MoveCount.ToString();
     }
 
     private void HandleBtnSetting()
     {
+        AudioManager.Ins.PlaySFX(AudioManager.Ins.SfxBtnClick);
         UIPanelSettingDialogGamePlay.gameObject.SetActive(true);
     }
 }

@@ -24,6 +24,7 @@ public class UIPanelSettingDialogMenu : MonoBehaviour
 
     private void HandleBtnResume()
     {
+        AudioManager.Ins.PlaySFX(AudioManager.Ins.SfxBtnClick);
         gameObject.SetActive(false);
     }
 }

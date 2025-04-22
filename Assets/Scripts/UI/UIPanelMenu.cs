@@ -27,6 +27,7 @@ public class UIPanelMenu : MonoBehaviour
 
     private void HandleBtnSettingMenu()
     {
+        AudioManager.Ins.PlaySFX(AudioManager.Ins.SfxBtnClick);
         UIPanelSettingDialogMenu.gameObject.SetActive(true);
     }
     private void HandleBtnMusicOn()
@@ -81,16 +82,19 @@ public class UIPanelMenu : MonoBehaviour
             LevelPrefab levelPb = Instantiate(LevelPrefab, Content.transform);
             levelPb.TxtNumbleLevel.text = LevelManager.Ins.ListLevelNumble[idx].ToString();
             levelPb.LockLevel.SetActive(!LevelManager.Ins.ListLevelUnlock[idx]);
-            levelPb.BtnLevel.onClick.AddListener(() => HandleBtnLevel(idx));
+            levelPb.BtnLevel.onClick.AddListener(() => HandleBtnLevel(idx, levelPb));
         }
     }
 
-    private void HandleBtnLevel(int idx)
+    private void HandleBtnLevel(int idx, LevelPrefab levelPb)
     {
         LevelManager.Ins.IdLevel = idx;
-        gameObject.SetActive(false);
+        if (levelPb.LockLevel.activeSelf) return;
+        AudioManager.Ins.PlaySFX(AudioManager.Ins.SfxBtnClick);
         UIManager.Ins.UIPanelGamePlay.gameObject.SetActive(true);
+        UIManager.Ins.Player.gameObject.SetActive(true);
         LevelManager.Ins.ListLevels[LevelManager.Ins.IdLevel].gameObject.SetActive(true);
         LevelManager.Ins.OnEnableGem(LevelManager.Ins.IdLevel);
+        gameObject.SetActive(false);
     }
 }

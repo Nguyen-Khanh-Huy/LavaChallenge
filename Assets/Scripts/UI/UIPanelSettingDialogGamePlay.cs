@@ -17,6 +17,7 @@ public class UIPanelSettingDialogGamePlay : UIPanelSettingDialogMenu
 
     private void HandleBtnRestart()
     {
+        AudioManager.Ins.PlaySFX(AudioManager.Ins.SfxBtnClick);
         gameObject.SetActive(false);
         LevelManager.Ins.ListLevels[LevelManager.Ins.IdLevel].gameObject.SetActive(false);
         LevelManager.Ins.ListLevels[LevelManager.Ins.IdLevel].gameObject.SetActive(true);
@@ -24,6 +25,7 @@ public class UIPanelSettingDialogGamePlay : UIPanelSettingDialogMenu
     
     private void HandleBtnHome()
     {
+        AudioManager.Ins.PlaySFX(AudioManager.Ins.SfxBtnClick);
         gameObject.SetActive(false);
         LevelManager.Ins.ListLevels[LevelManager.Ins.IdLevel].gameObject.SetActive(false);
         UIManager.Ins.UIPanelGamePlay.gameObject.SetActive(false);

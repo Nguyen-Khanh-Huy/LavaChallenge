@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 2934631726747309365}
   - component: {fileID: 2147175603035785780}
   - component: {fileID: 6254169473063212782}
-  - component: {fileID: 1212318495179340283}
+  - component: {fileID: 1322143199322827054}
   - component: {fileID: 7155297296489281857}
   m_Layer: 5
   m_Name: LevelPrefab
@@ -79,7 +79,7 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
---- !u!114 &1212318495179340283
+--- !u!114 &1322143199322827054
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -135,7 +135,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f2a73345c7946d74689747e12e4eac94, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  BtnLevel: {fileID: 1212318495179340283}
+  BtnLevel: {fileID: 1322143199322827054}
   TxtNumbleLevel: {fileID: 311697674032603072}
   LockLevel: {fileID: 3943517632428998700}
 --- !u!1 &550760496308430588
@@ -245,7 +245,7 @@ GameObject:
   - component: {fileID: 1601765373224555797}
   - component: {fileID: 5382875900483335302}
   m_Layer: 5
-  m_Name: ImgLockOnOff
+  m_Name: ImgLock
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
