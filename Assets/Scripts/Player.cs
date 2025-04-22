@@ -10,10 +10,9 @@ public class Player : MonoBehaviour
     [SerializeField] private float startTime;
     [SerializeField] private Vector3 startPos;
     [SerializeField] private Vector3 targetPos;
-    [SerializeField] private Vector3 moveDir;
     public Transform Model;
 
-    private Vector3 desiredMoveDir = Vector3.zero;
+    private Vector3 dir = Vector3.zero;
     private float rotate = 0f;
     private bool canMoveUpLeft = true;
     private bool canMoveUpRight = true;
@@ -38,33 +37,33 @@ public class Player : MonoBehaviour
 
     private void GetInput()
     {
-        desiredMoveDir = Vector3.zero;
+        dir = Vector3.zero;
         rotate = 0f;
 
         if (Input.GetAxisRaw("Vertical") > 0)
         {
-            desiredMoveDir = Vector3.forward;
+            dir = Vector3.forward;
             rotate = 90f;
         }
         else if (Input.GetAxisRaw("Vertical") < 0)
         {
-            desiredMoveDir = Vector3.back;
+            dir = Vector3.back;
             rotate = -90f;
         }
         else if (Input.GetAxisRaw("Horizontal") < 0)
         {
-            desiredMoveDir = Vector3.left;
+            dir = Vector3.left;
             rotate = 0f;
         }
         else if (Input.GetAxisRaw("Horizontal") > 0)
         {
-            desiredMoveDir = Vector3.right;
+            dir = Vector3.right;
             rotate = 180f;
         }
 
-        if (desiredMoveDir == Vector3.zero && pendingMoveDir != Vector3.zero)
+        if (dir == Vector3.zero && pendingMoveDir != Vector3.zero)
         {
-            desiredMoveDir = pendingMoveDir;
+            dir = pendingMoveDir;
             rotate = pendingRotationZ;
             pendingMoveDir = Vector3.zero;
         }
@@ -77,66 +76,36 @@ public class Player : MonoBehaviour
         canMoveUpForward = CanMoveUp(Vector3.forward);
         canMoveUpBack = CanMoveUp(Vector3.back);
 
-        if (!IsJumping && desiredMoveDir != Vector3.zero)
+        if (!IsJumping && dir != Vector3.zero)
         {
-            if (!CanMoveDown(desiredMoveDir) || !CanMoveUpDirection(desiredMoveDir))
-                desiredMoveDir = Vector3.zero;
+            if (!CanMoveDown(dir) || !CanMoveUpDirection(dir))
+                dir = Vector3.zero;
         }
     }
-
-    //private void OnDrawGizmos()
-    //{
-    //    if (!Application.isPlaying) return;
-
-    //    if (desiredMoveDir != Vector3.zero)
-    //    {
-    //        Vector3 normalizedDirection = desiredMoveDir.normalized;
-    //        Vector3 rightAxis = Vector3.Cross(normalizedDirection, Vector3.up).normalized;
-
-    //        if (rightAxis == Vector3.zero)
-    //            rightAxis = Vector3.right;
-
-    //        Quaternion rotation = Quaternion.AngleAxis(-45f, rightAxis);
-    //        Vector3 finalDirection = rotation * normalizedDirection;
-
-    //        Gizmos.color = Color.green;
-    //        Gizmos.DrawRay(transform.position, finalDirection * 2f);
-    //    }
-    //}
 
     private bool CanMoveDown(Vector3 direction)
     {
         Vector3 normalizedDirection = direction.normalized;
         Vector3 rightAxis = Vector3.Cross(normalizedDirection, Vector3.up).normalized;
-        if (rightAxis == Vector3.zero)
-            rightAxis = Vector3.right;
-
-        Quaternion rotation = Quaternion.AngleAxis(-45f, rightAxis);
+        Quaternion rotation = Quaternion.AngleAxis(-60f, rightAxis);
         Vector3 finalDirection = rotation * normalizedDirection;
-        Debug.DrawRay(transform.position, finalDirection * 2f, Color.green);
 
-        if (Physics.Raycast(transform.position, finalDirection, out RaycastHit hit, 2f))
-        {
-            if (hit.collider.gameObject.layer == LayerMask.NameToLayer("Tree"))
-                return false;
-            else if (hit.collider.gameObject.layer == LayerMask.NameToLayer("Box"))
-                return true;
-            else if (hit.collider.gameObject.layer == LayerMask.NameToLayer("Gem"))
-                return true;
-            else if (hit.collider.gameObject.layer == LayerMask.NameToLayer("BG3"))
-                return false;
-            else if (hit.collider.gameObject.layer == LayerMask.NameToLayer("BG4"))
-                return false;
-            else if (hit.collider.gameObject.layer == LayerMask.NameToLayer("BG5"))
-                return true;
-            else if (hit.collider.gameObject.layer == LayerMask.NameToLayer("Soul"))
-                return true;
-            else if (hit.collider.gameObject.layer != LayerMask.NameToLayer("BG"))
-                return false;
+        //Debug.DrawRay(transform.position + Vector3.down * 0.5f, direction * 2f, Color.blue);
+        if (Physics.Raycast(transform.position + Vector3.down * 0.5f, direction, 2f, LayerMask.GetMask("BG5")))
+            return false;
 
-            return true;
-        }
-        else return false;
+        //Debug.DrawRay(transform.position + Vector3.up * 1f, finalDirection * 4f, Color.green);
+        RaycastHit[] hits = Physics.RaycastAll(transform.position + Vector3.up * 1f, finalDirection, 4f);
+        if (hits.Any(hit => hit.collider.gameObject.layer == LayerMask.NameToLayer("Tree") ||
+                            hit.collider.gameObject.layer == LayerMask.NameToLayer("BG2") ||
+                            hit.collider.gameObject.layer == LayerMask.NameToLayer("BG3"))) return false;
+
+        return hits.Any(hit => hit.collider.gameObject.layer == LayerMask.NameToLayer("Box") ||
+                               hit.collider.gameObject.layer == LayerMask.NameToLayer("Gem") ||
+                               hit.collider.gameObject.layer == LayerMask.NameToLayer("BG") ||
+                               hit.collider.gameObject.layer == LayerMask.NameToLayer("BG4") ||
+                               hit.collider.gameObject.layer == LayerMask.NameToLayer("BG5") ||
+                               hit.collider.gameObject.layer == LayerMask.NameToLayer("Soul"));
     }
 
     private bool CanMoveUpDirection(Vector3 direction)
@@ -161,15 +130,14 @@ public class Player : MonoBehaviour
 
     private void Moving()
     {
-        if (!IsJumping && desiredMoveDir != Vector3.zero)
+        if (!IsJumping && dir != Vector3.zero)
         {
-            if (CanMoveDown(desiredMoveDir) && CanMoveUpDirection(desiredMoveDir))
+            if (CanMoveDown(dir) && CanMoveUpDirection(dir))
             {
                 IsJumping = true;
                 startTime = Time.time;
                 startPos = transform.position;
-                targetPos = startPos + desiredMoveDir * jumpDistance;
-                moveDir = desiredMoveDir;
+                targetPos = startPos + dir * jumpDistance;
                 Model.rotation = Quaternion.Euler(-90f, 0f, rotate);
             }
         }
@@ -181,8 +149,6 @@ public class Player : MonoBehaviour
             transform.position = Vector3.Lerp(startPos, targetPos, t) + Vector3.up * yOffset;
             if (t >= 1f) IsJumping = false;
         }
-        else if (desiredMoveDir == Vector3.zero)
-            moveDir = Vector3.zero;
     }
 
     public void MoveFromUIButton(Vector3 direction, float rotationZ)
