@@ -23,18 +23,18 @@ public class Box : MonoBehaviour
             float checkLength = 1.2f;
             Vector3 startRaycast = transform.position + Vector3.up * (GetComponent<Collider>().bounds.extents.y);
 
-            CheckCollision(startRaycast, Vector3.left, checkLength);
-            CheckCollision(startRaycast, Vector3.right, checkLength);
-            CheckCollision(startRaycast, Vector3.forward, checkLength);
-            CheckCollision(startRaycast, Vector3.back, checkLength);
+            CheckDirAround(startRaycast, Vector3.left, checkLength);
+            CheckDirAround(startRaycast, Vector3.right, checkLength);
+            CheckDirAround(startRaycast, Vector3.forward, checkLength);
+            CheckDirAround(startRaycast, Vector3.back, checkLength);
 
-            CheckDownCollision(startRaycast, 2.1f);
+            CheckDirDown(startRaycast, 2.1f);
         }
     }
 
-    private void CheckCollision(Vector3 startPos, Vector3 direction, float length)
+    private void CheckDirAround(Vector3 startPos, Vector3 direction, float length)
     {
-        Debug.DrawRay(startPos, direction * length, Color.red);
+        //Debug.DrawRay(startPos, direction * length, Color.red);
         if (Physics.Raycast(startPos, direction, out RaycastHit hit, length) && hit.collider.gameObject.layer == LayerMask.NameToLayer("Player") && direction != Vector3.down)
             StartCoroutine(MoveBoxOppositeDirection(direction));
     }
@@ -60,11 +60,11 @@ public class Box : MonoBehaviour
         isMoving = false;
     }
 
-    private void CheckDownCollision(Vector3 startPos, float length)
+    private void CheckDirDown(Vector3 startPos, float length)
     {
-        Vector3 downDirection = Vector3.down;
-        Debug.DrawRay(startPos, downDirection * length, Color.red);
-        if (!Physics.Raycast(startPos, downDirection, length))
-            transform.Translate(downDirection * 2);
+        //Debug.DrawRay(startPos, Vector3.down * length, Color.red);
+        int groundMask = LayerMask.GetMask("BGDown", "BG", "BG5", "Box");
+        if (!Physics.Raycast(startPos, Vector3.down, length, groundMask))
+            transform.Translate(Vector3.down * 2);
     }
 }

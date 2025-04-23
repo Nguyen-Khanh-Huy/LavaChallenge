@@ -17,10 +17,12 @@ public class LevelManager : Singleton<LevelManager>
         ListLevels.Clear();
         foreach (Transform child in transform)
         {
-            ListLevels.Add(child);
-
-            ListLevelUnlock.Add(false);
-            ListLevelNumble.Add(ListLevels.Count);
+            if (child.name != "BGDown")
+            {
+                ListLevels.Add(child);
+                ListLevelUnlock.Add(false);
+                ListLevelNumble.Add(ListLevels.Count);
+            }
         }
 
         if (ListLevels.Count > 0)
@@ -29,6 +31,17 @@ public class LevelManager : Singleton<LevelManager>
 
     public void OnEnableGem(int idx)
     {
-        ListLevels[idx].transform.Find("Maps/Gem").gameObject.SetActive(true);
+        //ListLevels[idx].transform.Find("Maps/Gem").gameObject.SetActive(true);
+        GameObject gem = ListLevels[idx].transform.Find("Maps/Gem").gameObject;
+        if (gem.activeSelf) return;
+        gem.SetActive(true);
+    }
+
+    public void OnOffBGDown(bool onoff)
+    {
+        //transform.Find("BGDown").gameObject.SetActive(onoff);
+        GameObject bgDown = transform.Find("BGDown").gameObject;
+        if (bgDown.activeSelf == onoff) return;
+        bgDown.SetActive(onoff);
     }
 }

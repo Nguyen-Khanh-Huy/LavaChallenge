@@ -12,13 +12,13 @@ GameObject:
   - component: {fileID: 2219023895637837653}
   - component: {fileID: 8554732760454096510}
   - component: {fileID: 3857921854221767895}
-  m_Layer: 0
+  m_Layer: 16
   m_Name: BGDown
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &3442965454763531937
 Transform:
   m_ObjectHideFlags: 0

@@ -15,6 +15,7 @@ public class Gem : MonoBehaviour
         {
             AudioManager.Ins.PlaySFX(AudioManager.Ins.SfxCollect);
             LevelManager.Ins.ListLevels[LevelManager.Ins.IdLevel].gameObject.SetActive(false);
+            LevelManager.Ins.OnOffBGDown(false);
             if (LevelManager.Ins.IdLevel < LevelManager.Ins.ListLevels.Count - 1)
             {
                 LevelManager.Ins.IdLevel++;

@@ -126,7 +126,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &1714467022063833984
 Transform:
   m_ObjectHideFlags: 0
@@ -179,9 +179,12 @@ MonoBehaviour:
   jumpHeight: 2
   jumpDuration: 0.4
   jumpDistance: 2
-  isJumping: 0
   startTime: 0
   startPos: {x: 0, y: 0, z: 0}
   targetPos: {x: 0, y: 0, z: 0}
-  moveDir: {x: 0, y: 0, z: 0}
-  model: {fileID: 8171565243903970854}
+  dir: {x: 0, y: 0, z: 0}
+  rotate: 0
+  Model: {fileID: 8171565243903970854}
+  IsJumping: 0
+  MoveCount: 0
+  CanInput: 1

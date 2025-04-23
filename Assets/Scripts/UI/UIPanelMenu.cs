@@ -95,6 +95,7 @@ public class UIPanelMenu : MonoBehaviour
         UIManager.Ins.Player.gameObject.SetActive(true);
         LevelManager.Ins.ListLevels[LevelManager.Ins.IdLevel].gameObject.SetActive(true);
         LevelManager.Ins.OnEnableGem(LevelManager.Ins.IdLevel);
+        LevelManager.Ins.OnOffBGDown(true);
         gameObject.SetActive(false);
     }
 }
