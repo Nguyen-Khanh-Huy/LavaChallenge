@@ -6,35 +6,49 @@ public class Player : MonoBehaviour
     [SerializeField] private float jumpHeight = 2f;
     [SerializeField] private float jumpDuration = 0.4f;
     [SerializeField] private float jumpDistance = 2f;
-    public bool IsJumping;
     [SerializeField] private float startTime;
     [SerializeField] private Vector3 startPos;
     [SerializeField] private Vector3 targetPos;
+
+    [SerializeField] private Vector3 dir = Vector3.zero;
+    [SerializeField] private float rotate = 0f;
+
     public Transform Model;
-
-    private Vector3 dir = Vector3.zero;
-    private float rotate = 0f;
-
-    private Vector3 pendingMoveDir = Vector3.zero;
-    private float pendingRotationZ = 0f;
+    public bool IsJumping;
     public int MoveCount = 0;
+    public bool CanInput = true;
 
     private void OnDisable()
     {
         MoveCount = 0;
         IsJumping = false;
+        CanInput = true;
+        dir = Vector3.zero;
     }
+
     private void Update()
     {
         GetInput();
         Moving();
+        CheckGround();
+    }
+
+    private void CheckGround()
+    {
+        //Debug.DrawRay(transform.position, Vector3.down * 1.5f, Color.green);
+        if (IsJumping) return;
+        int groundMask = LayerMask.GetMask("BG", "BG4", "BG5", "Box");
+        if (!Physics.Raycast(transform.position, Vector3.down, 1.5f, groundMask))
+        {
+            CanInput = false;
+            transform.position += Vector3.down * 1f;
+            CanInput = true;
+        }
     }
 
     private void GetInput()
     {
-        dir = Vector3.zero;
-        rotate = 0f;
-
+        if (!CanInput || IsJumping) return;
         if (Input.GetAxisRaw("Vertical") > 0)
         {
             dir = Vector3.forward;
@@ -54,13 +68,6 @@ public class Player : MonoBehaviour
         {
             dir = Vector3.right;
             rotate = 180f;
-        }
-
-        if (dir == Vector3.zero && pendingMoveDir != Vector3.zero)
-        {
-            dir = pendingMoveDir;
-            rotate = pendingRotationZ;
-            pendingMoveDir = Vector3.zero;
         }
     }
 
@@ -117,13 +124,16 @@ public class Player : MonoBehaviour
             float t = Mathf.Clamp01((Time.time - startTime) / jumpDuration);
             float yOffset = jumpHeight * 4 * t * (1 - t);
             transform.position = Vector3.Lerp(startPos, targetPos, t) + Vector3.up * yOffset;
-            if (t >= 1f) IsJumping = false;
+            if (t < 1f) return;
+            IsJumping = false;
+            dir = Vector3.zero;
         }
     }
 
     public void MoveFromUIButton(Vector3 direction, float rotationZ)
     {
-        pendingMoveDir = direction;
-        pendingRotationZ = rotationZ;
+        if (!CanInput || IsJumping) return;
+        dir = direction;
+        rotate = rotationZ;
     }
 }
