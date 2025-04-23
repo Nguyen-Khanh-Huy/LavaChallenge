@@ -13,13 +13,14 @@ public class ResizeScrollView : MonoBehaviour
 
     private void Start()
     {
-        StartCoroutine(ResizeNextFrame());
+        //StartCoroutine(ResizeNextFrame());
+        ResizeHoz();
+        ResizeVer();
     }
 
     IEnumerator ResizeNextFrame()
     {
         yield return null;
-
         ResizeHoz();
         ResizeVer();
     }

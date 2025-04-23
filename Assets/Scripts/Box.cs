@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class Box : MonoBehaviour
 {
-    [SerializeField] private bool isMoving = false;
+    [SerializeField] protected bool isMoving;
     [SerializeField] private Vector3 _startPos;
     private void Awake()
     {
@@ -18,24 +18,30 @@ public class Box : MonoBehaviour
 
     private void Update()
     {
-        if (!isMoving)
-        {
-            float checkLength = 1.2f;
-            Vector3 startRaycast = transform.position + Vector3.up * (GetComponent<Collider>().bounds.extents.y);
+        if (isMoving) return;
+        float checkLength = 1.2f;
+        //Vector3 startRaycast = transform.position + Vector3.up * (GetComponent<Collider>().bounds.extents.y);
+        Vector3 startRaycast = transform.position + Vector3.up * 0.8f;
 
-            CheckDirAround(startRaycast, Vector3.left, checkLength);
-            CheckDirAround(startRaycast, Vector3.right, checkLength);
-            CheckDirAround(startRaycast, Vector3.forward, checkLength);
-            CheckDirAround(startRaycast, Vector3.back, checkLength);
+        CheckDirAround(startRaycast, Vector3.left, checkLength);
+        CheckDirAround(startRaycast, Vector3.right, checkLength);
+        CheckDirAround(startRaycast, Vector3.forward, checkLength);
+        CheckDirAround(startRaycast, Vector3.back, checkLength);
 
-            CheckDirDown(startRaycast, 2.1f);
-        }
+        CheckDirDown(startRaycast, 2f);
     }
 
-    private void CheckDirAround(Vector3 startPos, Vector3 direction, float length)
+    //private void CheckDirAround(Vector3 startPos, Vector3 direction, float length)
+    //{
+    //    //Debug.DrawRay(startPos, direction * length, Color.red);
+    //    if (Physics.Raycast(startPos, direction, out RaycastHit hit, length) && hit.collider.gameObject.layer == LayerMask.NameToLayer("Player") && direction != Vector3.down)
+    //        StartCoroutine(MoveBoxOppositeDirection(direction));
+    //}
+
+    protected virtual void CheckDirAround(Vector3 startPos, Vector3 direction, float length)
     {
-        //Debug.DrawRay(startPos, direction * length, Color.red);
-        if (Physics.Raycast(startPos, direction, out RaycastHit hit, length) && hit.collider.gameObject.layer == LayerMask.NameToLayer("Player") && direction != Vector3.down)
+        //Debug.DrawRay(startPos, direction * length, Color.green);
+        if (Physics.Raycast(startPos, direction, length, LayerMask.GetMask("Player")))
             StartCoroutine(MoveBoxOppositeDirection(direction));
     }
 
@@ -60,9 +66,9 @@ public class Box : MonoBehaviour
         isMoving = false;
     }
 
-    private void CheckDirDown(Vector3 startPos, float length)
+    protected virtual void CheckDirDown(Vector3 startPos, float length)
     {
-        //Debug.DrawRay(startPos, Vector3.down * length, Color.red);
+        //Debug.DrawRay(startPos, Vector3.down * length, Color.green);
         int groundMask = LayerMask.GetMask("BGDown", "BG", "BG5", "Box");
         if (!Physics.Raycast(startPos, Vector3.down, length, groundMask))
             transform.Translate(Vector3.down * 2);
