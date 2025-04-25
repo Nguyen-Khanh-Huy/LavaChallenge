@@ -1,7 +1,5 @@
 using System;
-using System.Linq;
 using UnityEngine;
-using static UnityEngine.UI.Image;
 
 public class Player : MonoBehaviour
 {
@@ -39,7 +37,7 @@ public class Player : MonoBehaviour
     {
         //Debug.DrawRay(transform.position, Vector3.down * 1.5f, Color.green);
         if (IsJumping) return;
-        int groundMask = LayerMask.GetMask("BG", "BG2", "BG3", "BG4", "BG5", "Box");
+        int groundMask = LayerMask.GetMask("BG", "BG2", "BG3", "BG4", "Box", "Box2", "Box3", "Tree");
         if (!Physics.Raycast(transform.position, Vector3.down, 1.5f, groundMask))
         {
             CanInput = false;
@@ -72,38 +70,26 @@ public class Player : MonoBehaviour
             rotate = 180f;
         }
     }
-
     //private void OnDrawGizmos()
     //{
     //    Gizmos.color = Color.green;
-    //    Gizmos.DrawWireSphere(transform.position + Vector3.down + Vector3.forward * 2f + Vector3.left * 4f, 0.1f);
-    //    Gizmos.DrawWireSphere(transform.position + Vector3.down + Vector3.back * 2f + Vector3.left * 4f, 0.1f);
+    //    Gizmos.DrawWireSphere(transform.position + Vector3.down * 2f + Vector3.left * 2f, 0.1f);
+    //    Gizmos.DrawWireSphere(transform.position + Vector3.down * 2f + Vector3.right * 2f, 0.1f);
+    //    Gizmos.DrawWireSphere(transform.position + Vector3.down * 2f + Vector3.forward * 2f, 0.1f);
+    //    Gizmos.DrawWireSphere(transform.position + Vector3.down * 2f + Vector3.back * 2f, 0.1f);
 
-    //    Gizmos.DrawWireSphere(transform.position + Vector3.down + Vector3.forward * 2f + Vector3.right * 4f, 0.1f);
-    //    Gizmos.DrawWireSphere(transform.position + Vector3.down + Vector3.back * 2f + Vector3.right * 4f, 0.1f);
-
-    //    Gizmos.DrawWireSphere(transform.position + Vector3.down + Vector3.left * 2f + Vector3.forward * 4f, 0.1f);
-    //    Gizmos.DrawWireSphere(transform.position + Vector3.down + Vector3.right * 2f + Vector3.forward * 4f, 0.1f);
-
-    //    Gizmos.DrawWireSphere(transform.position + Vector3.down + Vector3.left * 2f + Vector3.back * 4f, 0.1f);
-    //    Gizmos.DrawWireSphere(transform.position + Vector3.down + Vector3.right * 2f + Vector3.back * 4f, 0.1f);
-
-    //    Gizmos.DrawWireSphere(transform.position + Vector3.down + Vector3.left * 4f, 0.1f);
-    //    Gizmos.DrawWireSphere(transform.position + Vector3.down + Vector3.right * 4f, 0.1f);
-    //    Gizmos.DrawWireSphere(transform.position + Vector3.down + Vector3.forward * 4f, 0.1f);
-    //    Gizmos.DrawWireSphere(transform.position + Vector3.down + Vector3.back * 4f, 0.1f);
+    //    Gizmos.DrawWireSphere(transform.position + Vector3.down * 3f + Vector3.left * 2f, 0.1f);
+    //    Gizmos.DrawWireSphere(transform.position + Vector3.down * 3f + Vector3.right * 2f, 0.1f);
+    //    Gizmos.DrawWireSphere(transform.position + Vector3.down * 3f + Vector3.forward * 2f, 0.1f);
+    //    Gizmos.DrawWireSphere(transform.position + Vector3.down * 3f + Vector3.back * 2f, 0.1f);
     //}
-
-    private bool CanMoveDown1(Vector3 direction)
+    private bool CanMoveDown(Vector3 direction)
     {
         int DisDownMask = LayerMask.GetMask("BG", "BG2", "BG3", "BG4", "Box", "Box2", "Box3", "Gem", "Soul");
-        return Physics.OverlapSphere(transform.position + direction * 2f + Vector3.down * 2f, 0.01f, DisDownMask).Length > 0;
-    }
-
-    private bool CanMoveDown2(Vector3 direction)
-    {
-        int DisDownMask = LayerMask.GetMask("BG", "BG2", "BG3", "BG4", "Box", "Box2", "Box3", "Gem", "Soul");
-        return Physics.OverlapSphere(transform.position + direction * 2f + Vector3.down * 3f, 0.01f, DisDownMask).Length > 0;
+        if (Physics.OverlapSphere(transform.position + Vector3.down * 2f + direction * 2f, 0.01f, DisDownMask).Length > 0 ||
+            Physics.OverlapSphere(transform.position + Vector3.down * 3f + direction * 2f, 0.01f, DisDownMask).Length > 0)
+            return true;
+        return false;
     }
 
     private bool CanMoveUp(Vector3 direction)
@@ -111,13 +97,13 @@ public class Player : MonoBehaviour
         int gemSoulMask = LayerMask.GetMask("Gem", "Soul");
         int bgTreeMask = LayerMask.GetMask("BG", "BG2", "BG3", "Tree");
 
-        if (Physics.Raycast(transform.position + Vector3.down + direction, direction, direction.magnitude, gemSoulMask))
-            return true;
-        return (!Physics.Raycast(transform.position + Vector3.down + direction, direction, direction.magnitude, bgTreeMask));
+        if (Physics.Raycast(transform.position + Vector3.down, direction, 2f, bgTreeMask)) return false;
+        return true;
     }
-    private bool CanMoveUpBox(Vector3 direction)
+
+    private bool BoxCheck(Vector3 direction)
     {
-        int mapsMask = LayerMask.GetMask("BG", "BG2", "BG3", "BG4", "Box", "Box2", "Box3", "Gem", "Soul");
+        int mapsMask = LayerMask.GetMask("BG", "BG2", "BG3", "BG4", "Box", "Box2", "Box3", "Gem", "Soul", "Tree");
         int boxMask = LayerMask.GetMask("Box");
         if (Physics.Raycast(transform.position + Vector3.down + direction, direction, direction.magnitude, boxMask))
             return !(Physics.OverlapSphere(transform.position + Vector3.down + direction * 4f, 0.01f, mapsMask).Length > 0);
@@ -126,7 +112,7 @@ public class Player : MonoBehaviour
 
     private bool Box2Check1(Vector3 direction)
     {
-        int mapsMask = LayerMask.GetMask("BG", "BG2", "BG3", "BG4", "Box", "Box2", "Box3", "Gem", "Soul");
+        int mapsMask = LayerMask.GetMask("BG", "BG2", "BG3", "BG4", "Box", "Box2", "Box3", "Gem", "Soul", "Tree");
         int box2Mask = LayerMask.GetMask("Box2");
 
         if (Physics.Raycast(transform.position + Vector3.down + direction, direction, out RaycastHit hit, direction.magnitude, box2Mask))
@@ -141,7 +127,7 @@ public class Player : MonoBehaviour
 
     private bool Box2Check2(Vector3 direction)
     {
-        int mapsMask = LayerMask.GetMask("BG", "BG2", "BG3", "BG4", "Box", "Box2", "Box3", "Gem", "Soul");
+        int mapsMask = LayerMask.GetMask("BG", "BG2", "BG3", "BG4", "Box", "Box2", "Box3", "Gem", "Soul", "Tree");
         int box2Mask = LayerMask.GetMask("Box2");
         Vector3 pos1 = (direction == Vector3.left || direction == Vector3.right) ? Vector3.forward * 2f : Vector3.left * 2f;
         Vector3 pos2 = (direction == Vector3.left || direction == Vector3.right) ? Vector3.back * 2f : Vector3.right * 2f;
@@ -158,7 +144,7 @@ public class Player : MonoBehaviour
 
     private bool Box3Check1(Vector3 direction)
     {
-        int mapsMask = LayerMask.GetMask("BG", "BG2", "BG3", "BG4", "Box", "Box2", "Box3", "Gem", "Soul");
+        int mapsMask = LayerMask.GetMask("BG", "BG2", "BG3", "BG4", "Box", "Box2", "Box3", "Gem", "Soul", "Tree");
         int box3Mask = LayerMask.GetMask("Box3");
 
         if (Physics.Raycast(transform.position + Vector3.down + direction, direction, out RaycastHit hit, direction.magnitude, box3Mask))
@@ -168,7 +154,7 @@ public class Player : MonoBehaviour
 
     private bool Box3Check2(Vector3 direction)
     {
-        int mapsMask = LayerMask.GetMask("BG", "BG2", "BG3", "BG4", "Box", "Box2", "Box3", "Gem", "Soul");
+        int mapsMask = LayerMask.GetMask("BG", "BG2", "BG3", "BG4", "Box", "Box2", "Box3", "Gem", "Soul", "Tree");
         int box3Mask = LayerMask.GetMask("Box3");
         Vector3 pos1 = (direction == Vector3.left || direction == Vector3.right) ? Vector3.forward * 2f : Vector3.left * 2f;
         Vector3 pos2 = (direction == Vector3.left || direction == Vector3.right) ? Vector3.back * 2f : Vector3.right * 2f;
@@ -187,7 +173,7 @@ public class Player : MonoBehaviour
     {
         if (!IsJumping && dir != Vector3.zero)
         {
-            if (CanMoveUp(dir) && CanMoveUpBox(dir) && Box2Check1(dir) && Box2Check2(dir) && Box3Check1(dir) && Box3Check2(dir) && CanMoveDown1(dir) && CanMoveDown2(dir))
+            if (CanMoveUp(dir) && CanMoveDown(dir) && BoxCheck(dir) && Box2Check1(dir) && Box2Check2(dir) && Box3Check1(dir) && Box3Check2(dir))
             {
                 IsJumping = true;
                 startTime = Time.time;

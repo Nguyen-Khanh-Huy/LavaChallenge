@@ -61,7 +61,7 @@ public class Box : MonoBehaviour
     protected virtual void CheckDirDown(Vector3 startPos, float length)
     {
         //Debug.DrawRay(startPos, Vector3.down * length, Color.green);
-        int groundMask = LayerMask.GetMask("BGDown", "BG", "BG5", "Box");
+        int groundMask = LayerMask.GetMask("BGDown", "BG", "BG2", "Box", "Box2", "Box3");
         if (!Physics.Raycast(startPos, Vector3.down, length, groundMask))
             transform.Translate(Vector3.down * 2);
     }

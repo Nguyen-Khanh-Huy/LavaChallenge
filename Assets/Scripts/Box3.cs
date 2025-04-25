@@ -29,7 +29,7 @@ public class Box3 : Box
 
     private void CheckDirDown(Vector3 startPos1, Vector3 startPos2, Vector3 startPos3, Vector3 startPos4)
     {
-        int groundMask = LayerMask.GetMask("BGDown", "BG", "BG5", "Box");
+        int groundMask = LayerMask.GetMask("BGDown", "BG", "BG2", "Box", "Box2", "Box3");
 
         bool raycast1Hit = Physics.Raycast(startPos1, Vector3.down, 2f, groundMask);
         bool raycast2Hit = Physics.Raycast(startPos2, Vector3.down, 2f, groundMask);
