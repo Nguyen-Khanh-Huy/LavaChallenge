@@ -20,7 +20,6 @@ public class Box : MonoBehaviour
     {
         if (isMoving) return;
         float checkLength = 1.2f;
-        //Vector3 startRaycast = transform.position + Vector3.up * (GetComponent<Collider>().bounds.extents.y);
         Vector3 startRaycast = transform.position + Vector3.up * 0.8f;
 
         CheckDirAround(startRaycast, Vector3.left, checkLength);
@@ -30,13 +29,6 @@ public class Box : MonoBehaviour
 
         CheckDirDown(startRaycast, 2f);
     }
-
-    //private void CheckDirAround(Vector3 startPos, Vector3 direction, float length)
-    //{
-    //    //Debug.DrawRay(startPos, direction * length, Color.red);
-    //    if (Physics.Raycast(startPos, direction, out RaycastHit hit, length) && hit.collider.gameObject.layer == LayerMask.NameToLayer("Player") && direction != Vector3.down)
-    //        StartCoroutine(MoveBoxOppositeDirection(direction));
-    //}
 
     protected virtual void CheckDirAround(Vector3 startPos, Vector3 direction, float length)
     {
